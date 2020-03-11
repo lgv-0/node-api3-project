@@ -15,17 +15,29 @@ router.post('/:id/posts', (req, res) =>
 
 router.get('/', (req, res) =>
 {
-  res.status(200).json({"ok":"ok"});
+  DB.get().then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, "Internal connection error");
+  })
 });
 
-router.get('/:id', (req, res) =>
+router.get('/:id', validateUserId, (req, res) =>
 {
-  
+  res.status(200).json(req.user);
 });
 
-router.get('/:id/posts', (req, res) =>
+router.get('/:id/posts', validateUserId, (req, res) =>
 {
-  
+  DB.getUserPosts(req.user.id).then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, "Internal server error");
+  });
 });
 
 router.delete('/:id', (req, res) =>
