@@ -2,47 +2,47 @@ const express = require('express');
 
 const router = express.Router();
 
-router.post('/', (req, res) =>
+router.post('/', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
-
-  res.status(200).json({"msg":"ok"});
+  
 });
 
-router.post('/:id/posts', (req, res) =>
+router.post('/:id/posts', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
-router.get('/', (req, res) =>
+router.get('/', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
-router.get('/:id', (req, res) =>
+router.get('/:id', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
-router.get('/:id/posts', (req, res) =>
+router.get('/:id/posts', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
-router.delete('/:id', (req, res) =>
+router.delete('/:id', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
-router.put('/:id', (req, res) =>
+router.put('/:id', logger, (req, res) =>
 {
-  logger(req.method, req.originalUrl, Date.now());
+  
 });
 
 //custom middleware
 
-function validateUserId(req, res, next) {
+function validateUserId(req, res, next)
+{
   // do your magic!
+
 }
 
 function validateUser(req, res, next) {
@@ -53,12 +53,10 @@ function validatePost(req, res, next) {
   // do your magic!
 }
 
-function logger()
+function logger(req, res, next)
 {
-  let Build = "";
-  for (var i = 0; i < arguments.length; i++)
-    Build += arguments[i] + (i !== arguments.length - 1 ? ", " : "");
-  console.log(Build);
+  console.log(`[x] ${req.method} - ${req.originalUrl} - ${Date.now()}`);
+  next();
 }
 
 module.exports = router;
