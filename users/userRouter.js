@@ -15,7 +15,7 @@ router.post('/:id/posts', (req, res) =>
 
 router.get('/', (req, res) =>
 {
-  
+  res.status(200).json({"ok":"ok"});
 });
 
 router.get('/:id', (req, res) =>
