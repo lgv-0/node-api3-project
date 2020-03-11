@@ -1,12 +1,13 @@
 const express = require('express');
-const DB = require("./userDb");
+const UserDB = require("./userDb");
+const PostDB = require("../posts/postDb");
 
 const router = express.Router();
 
 router.post('/', validateUser, (req, res) =>
 {
   //New user
-  DB.insert(req.userdata).then((response)=>
+  UserDB.insert(req.userdata).then((response)=>
   {
     res.status(200).json(response);
   }).catch((error)=>
@@ -15,14 +16,20 @@ router.post('/', validateUser, (req, res) =>
   });
 });
 
-router.post('/:id/posts', validatePost, (req, res) =>
+router.post('/:id/posts', validatePost, validateUserId, (req, res) =>
 {
-  
+  PostDB.insert({text:req.postdata.text, user_id:req.user.id}).then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, error);
+  });
 });
 
 router.get('/', (req, res) =>
 {
-  DB.get().then((response)=>
+  UserDB.get().then((response)=>
   {
     res.status(200).json(response);
   }).catch((error)=>
@@ -38,7 +45,7 @@ router.get('/:id', validateUserId, (req, res) =>
 
 router.get('/:id/posts', validateUserId, (req, res) =>
 {
-  DB.getUserPosts(req.user.id).then((response)=>
+  UserDB.getUserPosts(req.user.id).then((response)=>
   {
     res.status(200).json(response);
   }).catch((error)=>
@@ -49,7 +56,7 @@ router.get('/:id/posts', validateUserId, (req, res) =>
 
 router.delete('/:id', validateUserId, (req, res) =>
 {
-  DB.remove(req.user.id).then((response)=>
+  UserDB.remove(req.user.id).then((response)=>
   {
     res.status(200).json(response);
   }).catch((error)=>
@@ -58,9 +65,9 @@ router.delete('/:id', validateUserId, (req, res) =>
   })
 });
 
-router.put('/:id', validateUserId, validateUser, (req, res) =>
+router.put('/:id', validateUser, validateUserId, (req, res) =>
 {
-  DB.update(req.user.id, req.userdata).then((response)=>
+  UserDB.update(req.user.id, req.userdata).then((response)=>
   {
     res.status(200).json(response);
   }).catch((error)=>
@@ -85,7 +92,7 @@ function validateUserId(req, res, next)
     return;
   }
 
-  DB.getById(ID).then((response)=>
+  UserDB.getById(ID).then((response)=>
   {
     if (response === undefined)
     {
@@ -115,12 +122,13 @@ function validateUser(req, res, next)
 
 function validatePost(req, res, next)
 {
-  let UserData = req.body;
-  if (!UserData || !UserData.text)
+  let PostData = req.body;
+  if (!PostData || !PostData.text)
   {
     failOut(res, 500, "Invalid request paramaters");
     return;
   }
+  req.postdata = {text:PostData.text};
   next();
 } 
 
