@@ -18,9 +18,9 @@ router.get('/', logger, (req, res) =>
   
 });
 
-router.get('/:id', logger, validateUserId, (req, res) =>
+router.get('/:id', logger, (req, res) =>
 {
-  console.log(req.user);
+  
 });
 
 router.get('/:id/posts', logger, (req, res) =>
@@ -72,15 +72,25 @@ function validateUserId(req, res, next)
 
 function validateUser(req, res, next)
 {
-  // do your magic!
-
+  let UserData = req.body;
+  if (!UserData || !UserData.name)
+  {
+    failOut(res, 500, "Invalid request paramaters");
+    return;
+  }
+  next();
 }
 
 function validatePost(req, res, next)
 {
-  // do your magic!
-
-}
+  let UserData = req.body;
+  if (!UserData || !UserData.text)
+  {
+    failOut(res, 500, "Invalid request paramaters");
+    return;
+  }
+  next();
+} 
 
 function logger(req, res, next)
 {
