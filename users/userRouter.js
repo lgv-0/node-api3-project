@@ -3,37 +3,37 @@ const DB = require("./userDb");
 
 const router = express.Router();
 
-router.post('/', logger, (req, res) =>
+router.post('/', (req, res) =>
 {
   
 });
 
-router.post('/:id/posts', logger, (req, res) =>
+router.post('/:id/posts', (req, res) =>
 {
   
 });
 
-router.get('/', logger, (req, res) =>
+router.get('/', (req, res) =>
 {
   
 });
 
-router.get('/:id', logger, (req, res) =>
+router.get('/:id', (req, res) =>
 {
   
 });
 
-router.get('/:id/posts', logger, (req, res) =>
+router.get('/:id/posts', (req, res) =>
 {
   
 });
 
-router.delete('/:id', logger, (req, res) =>
+router.delete('/:id', (req, res) =>
 {
   
 });
 
-router.put('/:id', logger, (req, res) =>
+router.put('/:id', (req, res) =>
 {
   
 });
@@ -91,11 +91,5 @@ function validatePost(req, res, next)
   }
   next();
 } 
-
-function logger(req, res, next)
-{
-  console.log(`[x] ${req.method} - ${req.originalUrl} - ${Date.now()}`);
-  next();
-}
 
 module.exports = router;
