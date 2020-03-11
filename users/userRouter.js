@@ -3,12 +3,19 @@ const DB = require("./userDb");
 
 const router = express.Router();
 
-router.post('/', (req, res) =>
+router.post('/', validateUser, (req, res) =>
 {
-  
+  //New user
+  DB.insert(req.userdata).then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, "Internal connection error");
+  });
 });
 
-router.post('/:id/posts', (req, res) =>
+router.post('/:id/posts', validatePost, (req, res) =>
 {
   
 });
@@ -40,14 +47,26 @@ router.get('/:id/posts', validateUserId, (req, res) =>
   });
 });
 
-router.delete('/:id', (req, res) =>
+router.delete('/:id', validateUserId, (req, res) =>
 {
-  
+  DB.remove(req.user.id).then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, "Internal connection error");
+  })
 });
 
-router.put('/:id', (req, res) =>
+router.put('/:id', validateUserId, validateUser, (req, res) =>
 {
-  
+  DB.update(req.user.id, req.userdata).then((response)=>
+  {
+    res.status(200).json(response);
+  }).catch((error)=>
+  {
+    failOut(res, 500, "Internal server error");
+  });
 });
 
 //custom middleware
@@ -90,6 +109,7 @@ function validateUser(req, res, next)
     failOut(res, 500, "Invalid request paramaters");
     return;
   }
+  req.userdata = {name:UserData.name};
   next();
 }
 
